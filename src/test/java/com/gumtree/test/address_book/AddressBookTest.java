@@ -24,4 +24,14 @@ public class AddressBookTest {
         sut.read();
     }
 
+    @Test
+    public void shouldThrowExceptionIfUnableToParseDateOfBirth() throws Exception {
+        thrown.expect(AddressBookException.class);
+        thrown.expectMessage("Error occured while parsing date of birth");
+
+        sut = new AddressBook("src/test/resources/AddressBook_empty_dob");
+
+        sut.oldest();
+    }
+
 }

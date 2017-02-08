@@ -20,8 +20,7 @@ public class AddressBookOldestParameterizedTest {
                 {"AddressBook_missing_gender", "WesJackson"},
                 {"AddressBook_missing_dob", "WesJackson"},
                 {"AddressBook_empty_name", "WesJackson"},
-                {"AddressBook_empty_gender", "WesJackson"},
-//                {"AddressBook_empty_dob", "WesJackson"}
+                {"AddressBook_empty_gender", "WesJackson"}
         });
     }
 

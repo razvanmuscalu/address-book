@@ -2,6 +2,7 @@ package com.gumtree.test.address_book;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -36,7 +37,13 @@ public class AddressBook {
 
         Optional<Person> oldestPerson = lineParts
                 .stream()
-                .map(parts -> new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER)))
+                .map(parts -> {
+                    try {
+                        return new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER));
+                    } catch (DateTimeParseException e) {
+                        throw new AddressBookException("Error occured while parsing date of birth");
+                    }
+                })
                 .min(comparing(Person::getDob));
 
         if (oldestPerson.isPresent())
