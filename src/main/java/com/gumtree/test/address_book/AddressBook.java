@@ -1,14 +1,20 @@
 package com.gumtree.test.address_book;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.lines;
 import static java.nio.file.Paths.get;
+import static java.time.LocalDate.parse;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 public class AddressBook {
+
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
 
     private final String inputPath;
 
@@ -23,6 +29,20 @@ public class AddressBook {
                 .stream()
                 .filter(parts -> parts[1].equals(gender))
                 .count();
+    }
+
+    public String oldest() {
+        List<String[]> lineParts = read();
+
+        Optional<Person> oldestPerson = lineParts
+                .stream()
+                .map(parts -> new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER)))
+                .min(comparing(Person::getDob));
+
+        if (oldestPerson.isPresent())
+            return oldestPerson.get().getName();
+
+        return "";
     }
 
     public List<String[]> read() {
