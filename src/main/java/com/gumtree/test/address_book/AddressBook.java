@@ -25,7 +25,7 @@ public class AddressBook {
                 .count();
     }
 
-    private List<String[]> read() {
+    public List<String[]> read() {
         Stream<String> lines;
         try {
             lines = lines(get(inputPath));
@@ -35,7 +35,7 @@ public class AddressBook {
 
         return lines
                 .map(line -> line.replaceAll("\\s+", ""))
-                .map(parts -> parts.split(","))
+                .map(parts -> parts.split(",", -1))
                 .filter(parts -> parts.length == 3)
                 .collect(toList());
     }
