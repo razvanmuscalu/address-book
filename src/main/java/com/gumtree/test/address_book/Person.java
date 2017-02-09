@@ -1,6 +1,7 @@
 package com.gumtree.test.address_book;
 
 import java.time.LocalDate;
+import java.util.function.Predicate;
 
 public class Person {
 
@@ -24,5 +25,13 @@ public class Person {
 
     public LocalDate getDob() {
         return dob;
+    }
+
+    public static Predicate<Person> hasGender(String gender) {
+        return p -> p.getGender().equals(gender);
+    }
+
+    public static Predicate<Person> hasName(String name) {
+        return p -> p.getName().equals(name);
     }
 }

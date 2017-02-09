@@ -5,11 +5,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static com.gumtree.test.address_book.Person.hasGender;
+import static com.gumtree.test.address_book.Person.hasName;
 import static java.lang.String.format;
 import static java.nio.file.Files.lines;
 import static java.nio.file.Paths.get;
@@ -37,35 +38,30 @@ public class AddressBook {
     }
 
     public long countByGender(String gender) {
-        List<String[]> lineParts = read();
-
-        return lineParts
+        return read()
                 .stream()
-                .filter(parts -> parts[1].equals(gender))
+                .filter(hasGender(gender))
                 .count();
     }
 
     public String oldest() {
-        List<String[]> lineParts = read();
-
-        Optional<Person> oldestPerson = lineParts
+        return read()
                 .stream()
-                .map(lineToPerson)
-                .min(comparing(Person::getDob));
-
-        return oldestPerson.orElseThrow(() -> new AddressBookException("Unable to find oldest person")).getName();
+                .min(comparing(Person::getDob))
+                .orElseThrow(() -> new AddressBookException("Unable to find oldest person"))
+                .getName();
     }
 
     public long compare(String person1Name, String person2Name) {
-        List<String[]> lineParts = read();
+        List<Person> persons = read();
 
-        LocalDate person1DateOfBirth = findPersonDateOfBirth(person1Name, lineParts);
-        LocalDate person2DateOfBirth = findPersonDateOfBirth(person2Name, lineParts);
+        LocalDate person1DateOfBirth = findPersonDateOfBirth(person1Name, persons);
+        LocalDate person2DateOfBirth = findPersonDateOfBirth(person2Name, persons);
 
         return DAYS.between(person1DateOfBirth, person2DateOfBirth);
     }
 
-    public List<String[]> read() {
+    public List<Person> read() {
         Stream<String> lines;
         try {
             lines = lines(get(inputPath));
@@ -77,13 +73,13 @@ public class AddressBook {
                 .map(formatLine())
                 .map(split())
                 .filter(validateLine())
+                .map(lineToPerson)
                 .collect(toList());
     }
 
-    private LocalDate findPersonDateOfBirth(String name, List<String[]> lineParts) {
+    private LocalDate findPersonDateOfBirth(String name, List<Person> lineParts) {
         return lineParts
                 .stream()
-                .map(lineToPerson)
                 .filter(hasName(name))
                 .findAny()
                 .orElseThrow(() -> new AddressBookException(format("Unable to find %s", name)))
@@ -94,15 +90,12 @@ public class AddressBook {
         return line -> line.replaceAll("\\s+", "");
     }
 
-    private static Predicate<String[]> validateLine() {
-        return parts -> parts.length == 3;
-    }
-
     private static Function<String, String[]> split() {
         return parts -> parts.split(",", -1);
     }
 
-    private static Predicate<Person> hasName(String name) {
-        return p -> p.getName().equals(name);
+    private static Predicate<String[]> validateLine() {
+        return parts -> parts.length == 3;
     }
+
 }
