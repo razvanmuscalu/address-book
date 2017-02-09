@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -19,6 +21,14 @@ import static java.util.stream.Collectors.toList;
 public class AddressBook {
 
     private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy");
+
+    private final Function<String[], Person> lineToPerson = parts -> {
+        try {
+            return new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER));
+        } catch (DateTimeParseException e) {
+            throw new AddressBookException("Error occured while parsing date of birth");
+        }
+    };
 
     private final String inputPath;
 
@@ -40,13 +50,7 @@ public class AddressBook {
 
         Optional<Person> oldestPerson = lineParts
                 .stream()
-                .map(parts -> {
-                    try {
-                        return new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER));
-                    } catch (DateTimeParseException e) {
-                        throw new AddressBookException("Error occured while parsing date of birth");
-                    }
-                })
+                .map(lineToPerson)
                 .min(comparing(Person::getDob));
 
         if (oldestPerson.isPresent())
@@ -71,20 +75,6 @@ public class AddressBook {
         throw new AddressBookException(format("Unable to calculate difference between the dates of birth of %s and %s", person1Name, person2Name));
     }
 
-    private Optional<Person> findPerson(String person1, List<String[]> lineParts) {
-        return lineParts
-                .stream()
-                .map(parts -> {
-                    try {
-                        return new Person(parts[0], parts[1], parse(parts[2], DATE_FORMATTER));
-                    } catch (DateTimeParseException e) {
-                        throw new AddressBookException("Error occured while parsing date of birth");
-                    }
-                })
-                .filter(p -> p.getName().equals(person1))
-                .findAny();
-    }
-
     public List<String[]> read() {
         Stream<String> lines;
         try {
@@ -94,10 +84,30 @@ public class AddressBook {
         }
 
         return lines
-                .map(line -> line.replaceAll("\\s+", ""))
-                .map(parts -> parts.split(",", -1))
-                .filter(parts -> parts.length == 3)
+                .map(formatLine())
+                .map(split())
+                .filter(validateLine())
                 .collect(toList());
+    }
+
+    private Optional<Person> findPerson(String person1, List<String[]> lineParts) {
+        return lineParts
+                .stream()
+                .map(lineToPerson)
+                .filter(p -> p.getName().equals(person1))
+                .findAny();
+    }
+
+    private static Function<String, String> formatLine() {
+        return line -> line.replaceAll("\\s+", "");
+    }
+
+    private static Predicate<String[]> validateLine() {
+        return parts -> parts.length == 3;
+    }
+
+    private static Function<String, String[]> split() {
+        return parts -> parts.split(",", -1);
     }
 
 }
