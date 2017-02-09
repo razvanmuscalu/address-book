@@ -15,7 +15,7 @@ public class AddressBookTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void shouldThrowExceptionIfUnableToReadFile() throws Exception {
+    public void shouldThrowExceptionIfUnableToReadFile() {
         thrown.expect(AddressBookException.class);
         thrown.expectMessage("Error occured while reading address book");
 
@@ -25,13 +25,33 @@ public class AddressBookTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfUnableToParseDateOfBirth() throws Exception {
+    public void shouldThrowExceptionIfUnableToParseDateOfBirthInOldest() {
         thrown.expect(AddressBookException.class);
         thrown.expectMessage("Error occured while parsing date of birth");
 
         sut = new AddressBook("src/test/resources/AddressBook_empty_dob");
 
         sut.oldest();
+    }
+
+    @Test
+    public void shouldThrowExceptionIfUnableToParseDateOfBirthInCompare() {
+        thrown.expect(AddressBookException.class);
+        thrown.expectMessage("Error occured while parsing date of birth");
+
+        sut = new AddressBook("src/test/resources/AddressBook_empty_dob");
+
+        sut.compare("BillMcKnight", "PaulRobinson");
+    }
+
+    @Test
+    public void shouldThrowExceptionIfCannotFindDateOfBirthInCompare() throws Exception {
+        thrown.expect(AddressBookException.class);
+        thrown.expectMessage("Unable to calculate difference between the dates of birth of invalid and PaulRobinson");
+
+        sut = new AddressBook("src/test/resources/AddressBook");
+
+        sut.compare("invalid", "PaulRobinson");
     }
 
 }
