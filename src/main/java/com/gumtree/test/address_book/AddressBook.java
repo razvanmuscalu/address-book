@@ -32,20 +32,22 @@ public class AddressBook {
     };
 
     private final String inputPath;
+    private final List<Person> persons;
 
     public AddressBook(String inputPath) {
         this.inputPath = inputPath;
+        this.persons = read();
     }
 
     public long countByGender(String gender) {
-        return read()
+        return persons
                 .stream()
                 .filter(hasGender(gender))
                 .count();
     }
 
     public String oldest() {
-        return read()
+        return persons
                 .stream()
                 .min(comparing(Person::getDob))
                 .orElseThrow(() -> new AddressBookException("Unable to find oldest person"))
@@ -53,8 +55,6 @@ public class AddressBook {
     }
 
     public long compare(String person1Name, String person2Name) {
-        List<Person> persons = read();
-
         LocalDate person1DateOfBirth = findPersonDateOfBirth(person1Name, persons);
         LocalDate person2DateOfBirth = findPersonDateOfBirth(person2Name, persons);
 
@@ -77,8 +77,8 @@ public class AddressBook {
                 .collect(toList());
     }
 
-    private LocalDate findPersonDateOfBirth(String name, List<Person> lineParts) {
-        return lineParts
+    private LocalDate findPersonDateOfBirth(String name, List<Person> persons) {
+        return persons
                 .stream()
                 .filter(hasName(name))
                 .findAny()
