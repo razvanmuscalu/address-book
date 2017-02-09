@@ -5,7 +5,7 @@ import static java.lang.System.out;
 public class Main {
 
     public static void main(String[] args) {
-        AddressBook addressBook = new AddressBook("src/main/resources/AddressBook");
+        AddressBook addressBook = new AddressBook("src/main/resources/input/AddressBook");
 
         out.println("========= Address Book ==========\n");
 
