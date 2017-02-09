@@ -59,17 +59,10 @@ public class AddressBook {
     public long compare(String person1Name, String person2Name) {
         List<String[]> lineParts = read();
 
-        Optional<Person> person1 = findPerson(person1Name, lineParts);
-        Optional<Person> person2 = findPerson(person2Name, lineParts);
+        LocalDate person1DateOfBirth = findPersonDateOfBirth(person1Name, lineParts);
+        LocalDate person2DateOfBirth = findPersonDateOfBirth(person2Name, lineParts);
 
-        if (person1.isPresent() && person2.isPresent()) {
-            LocalDate person1Dob = person1.get().getDob();
-            LocalDate person2Dob = person2.get().getDob();
-
-            return DAYS.between(person1Dob, person2Dob);
-        }
-
-        throw new AddressBookException(format("Unable to calculate difference between the dates of birth of %s and %s", person1Name, person2Name));
+        return DAYS.between(person1DateOfBirth, person2DateOfBirth);
     }
 
     public List<String[]> read() {
@@ -87,12 +80,14 @@ public class AddressBook {
                 .collect(toList());
     }
 
-    private Optional<Person> findPerson(String person1, List<String[]> lineParts) {
+    private LocalDate findPersonDateOfBirth(String name, List<String[]> lineParts) {
         return lineParts
                 .stream()
                 .map(lineToPerson)
-                .filter(p -> p.getName().equals(person1))
-                .findAny();
+                .filter(hasName(name))
+                .findAny()
+                .orElseThrow(() -> new AddressBookException(format("Unable to find %s", name)))
+                .getDob();
     }
 
     private static Function<String, String> formatLine() {
@@ -107,4 +102,7 @@ public class AddressBook {
         return parts -> parts.split(",", -1);
     }
 
+    private static Predicate<Person> hasName(String name) {
+        return p -> p.getName().equals(name);
+    }
 }

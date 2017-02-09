@@ -73,7 +73,7 @@ public class AddressBookCompareTest {
         @Test
         public void shouldThrowExceptionWhenMissingDateOfBirth() throws Exception {
             thrown.expect(AddressBookException.class);
-            thrown.expectMessage("Unable to calculate difference between the dates of birth of BillMcKnight and PaulRobinson");
+            thrown.expectMessage("Unable to find BillMcKnight");
 
             sut = new AddressBook("src/test/resources/AddressBook_missing_dob");
 
@@ -83,7 +83,7 @@ public class AddressBookCompareTest {
         @Test
         public void shouldThrowExceptionWhenMissingDateOfName() throws Exception {
             thrown.expect(AddressBookException.class);
-            thrown.expectMessage("Unable to calculate difference between the dates of birth of BillMcKnight and PaulRobinson");
+            thrown.expectMessage("Unable to find BillMcKnight");
 
             sut = new AddressBook("src/test/resources/AddressBook_missing_name");
 
@@ -93,7 +93,7 @@ public class AddressBookCompareTest {
         @Test
         public void shouldThrowExceptionWhenMissingGender() throws Exception {
             thrown.expect(AddressBookException.class);
-            thrown.expectMessage("Unable to calculate difference between the dates of birth of BillMcKnight and PaulRobinson");
+            thrown.expectMessage("Unable to find BillMcKnight");
 
             sut = new AddressBook("src/test/resources/AddressBook_missing_gender");
 
