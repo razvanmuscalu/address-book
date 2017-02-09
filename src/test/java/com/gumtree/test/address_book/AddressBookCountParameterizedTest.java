@@ -16,12 +16,12 @@ public class AddressBookCountParameterizedTest {
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {"AddressBook", 3, 2},
-                {"AddressBook_missing_name", 2, 2},
-                {"AddressBook_missing_gender", 2, 2},
-                {"AddressBook_missing_dob", 2, 2},
-                {"AddressBook_empty_name", 3, 2},
-                {"AddressBook_empty_gender", 2, 2},
-                {"AddressBook_empty_dob", 3, 2}
+                {"AddressBook_missing_name", 0, 0},
+                {"AddressBook_missing_gender", 0, 0},
+                {"AddressBook_missing_dob", 0, 0},
+                {"AddressBook_empty_name", 2, 0},
+                {"AddressBook_empty_gender", 1, 0},
+                {"AddressBook_empty_dob", 2, 0}
         });
     }
 

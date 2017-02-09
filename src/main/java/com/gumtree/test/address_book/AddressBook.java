@@ -53,10 +53,7 @@ public class AddressBook {
                 .map(lineToPerson)
                 .min(comparing(Person::getDob));
 
-        if (oldestPerson.isPresent())
-            return oldestPerson.get().getName();
-
-        return "";
+        return oldestPerson.orElseThrow(() -> new AddressBookException("Unable to find oldest person")).getName();
     }
 
     public long compare(String person1Name, String person2Name) {
