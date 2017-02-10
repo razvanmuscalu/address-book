@@ -11,7 +11,7 @@ import org.apache.hadoop.util.Tool;
 import static org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath;
 import static org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath;
 
-public class MapReduceAddressBook extends Configured implements Tool {
+public class AddressBookCount extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
@@ -19,16 +19,16 @@ public class MapReduceAddressBook extends Configured implements Tool {
 
         Job job = Job.getInstance(conf);
         job.setJobName("address-book");
-        job.setJarByClass(MapReduceAddressBook.class);
+        job.setJarByClass(AddressBookCount.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
-        job.setMapperClass(Map.class);
-        job.setReducerClass(Reduce.class);
+        job.setMapperClass(MapCount.class);
+        job.setReducerClass(ReduceCount.class);
 
-        Path input = new Path(args[0]);
-        Path output = new Path(args[1]);
+        Path input = new Path("src/main/resources/input");
+        Path output = new Path("target/output/count");
         addInputPath(job, input);
         setOutputPath(job, output);
 

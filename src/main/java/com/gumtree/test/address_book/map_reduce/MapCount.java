@@ -7,13 +7,12 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
-public class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class MapCount extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String[] row = value.toString().replaceAll("\\s+", "").split(",");
 
-        if (row[1].equals("Male"))
-            context.write(new Text(), new IntWritable(1));
+        context.write(new Text(row[1]), new IntWritable(1));
     }
 }
