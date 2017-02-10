@@ -10,6 +10,9 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import static org.apache.commons.lang.builder.ToStringBuilder.reflectionToString;
+import static org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE;
+
 public class PersonWritable implements Writable {
 
     private Text name;
@@ -94,5 +97,10 @@ public class PersonWritable implements Writable {
                 .append(gender)
                 .append(dobMillis)
                 .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return reflectionToString(this, SHORT_PREFIX_STYLE);
     }
 }

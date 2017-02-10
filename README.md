@@ -1,3 +1,24 @@
+Solution overview
+
+Solution 1
+- standard Java 8 functional solution
+- I made the <count> function accept a <gender> parameter to be more re-usable
+- The <compare> age comparison function return a positive number if person1 older than person2, and a negative number vice-versa
+- <<<mvn exec:java -Dexec.mainClass="com.gumtree.test.address_book.Main">>> will run the code against the provided AddressBook file.
+
+Solution 2
+- Hadoop MapReduce solution
+- since this is a new technology to me, the solution is experimental and I treated it as a learning exercise (e.g. I focused only on happy path and did not account for error scenarios, although it should be very easy to guard against edge cases)
+- the happy path code written is nonetheless tested via MRUnit tests
+
+<<<mvn clean test">>> will run all tests
+
+There are also some IntelliJ run configurations is you import this in IntelliJ.
+
+
+========================================================================================================================
+
+
 # Gumtree coding challenge
 
 ## The task
